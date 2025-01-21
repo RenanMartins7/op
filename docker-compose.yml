@@ -1,0 +1,16 @@
+services:
+  iperf:
+    container_name: iperf_server
+    build:
+      context: .
+      dockerfile: iperf_server
+    ports:
+      - "5201:5201"
+  
+  api:
+    container_name: api_services
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
