@@ -2,9 +2,19 @@ from fastapi import FastAPI, Query
 from merge import *
 from selection import *
 from iperf import *
+from otlp_provider import *
 import random
+import os
+from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 
 app = FastAPI()
+
+resource = Resource(attributes={SERVICE_NAME: "api"})
+os.environ["OTEL_SERVICE_NAME"] = "api"
+
+tracer = traces_provider(resource)
+meter = metrics_provider(resource)
+
 
 @app.get("/merge")
 def merge_service(size: int = Query(10000, ge=1)):
