@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean
 
 #instaling the requiriments to the applications
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 
 #Expose the port that runs the app
