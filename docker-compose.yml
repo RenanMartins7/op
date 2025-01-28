@@ -28,7 +28,17 @@ services:
     command: ["--config=/etc/otel/config.yaml"]
     depends_on:
       - jaeger
-      #- prometheus
+  
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - collector
+    
   
   api:
     container_name: api_services
@@ -40,3 +50,4 @@ services:
     depends_on:
       - jaeger
       - iperf
+      - prometheus
