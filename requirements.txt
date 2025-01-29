@@ -1,6 +1,7 @@
 fastapi
 iperf3
 uvicorn
+psutil
 opentelemetry-api
 opentelemetry-sdk
 opentelemetry-exporter-otlp
