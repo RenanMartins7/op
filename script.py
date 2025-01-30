@@ -3,9 +3,9 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 # URLs que serão acessadas
 urls = [
-    "http://localhost:8000/selection?size=3000",
-    "http://localhost:8000/merge",
-    "http://localhost:8000/iperftest?server=143.54.201.115&duration=2"
+    "http://api:8000/selection?size=3000",
+    "http://api:8000/merge",
+    #"http://localhost:8000/iperftest?server=143.54.201.115&duration=2"
 ]
 
 # Função para fazer a requisição HTTP
