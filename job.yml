@@ -3,10 +3,12 @@ kind: Job
 metadata:
   name: script
 spec:
+  completions: 5
+  parallelism: 5
   template:
     spec:
       containers:
       - name: script
         image: momosuke07/script:latest
-      restartPolicy: Never
+      restartPolicy: Always
   backoffLimit: 4
