@@ -1,5 +1,4 @@
 #Merge Sort implementation for mocked services in api
-
 def merge(left, right):
     result = []
     i = j = 0
@@ -29,3 +28,4 @@ def merge_sort(randomList):
     right = merge_sort(mergeList[middle:])
 
     return merge(left, right) 
+

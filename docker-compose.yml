@@ -1,11 +1,11 @@
 services:
-  iperf:
-    container_name: iperf_server
-    build:
-      context: .
-      dockerfile: iperf_server
-    ports:
-      - "5201:5201"
+  # iperf:
+  #   container_name: iperf_server
+  #   build:
+  #     context: .
+  #     dockerfile: iperf_server
+  #   ports:
+  #     - "5201:5201"
 
   jaeger:
     container_name: jaeger
@@ -42,6 +42,8 @@ services:
   
   api:
     container_name: api_services
+    volumes:
+      - .\api.py:/app/api.py
     build:
       context: .
       dockerfile: Dockerfile
@@ -50,5 +52,35 @@ services:
     depends_on:
       - collector
       - jaeger
-      - iperf
+      # - iperf
+      - prometheus
+
+  binary:
+    container_name: binary
+    volumes:
+      - .\binary_search.py:/app/binary_search.py
+    build:
+      context: .
+      dockerfile: DockerfileBinary
+    ports:
+      - "8001:8001"
+    depends_on:
+      - collector
+      - jaeger
+      # - iperf
+      - prometheus
+
+  register:
+    container_name: register
+    volumes:
+      - .\register.py:/app/register.py
+    build:
+      context: .
+      dockerfile: DockerfileRegister
+    ports:
+      - "8002:8002"
+    depends_on:
+      - collector
+      - jaeger
+      # - iperf
       - prometheus
