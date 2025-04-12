@@ -70,15 +70,16 @@ async def busca_binaria_endpoint(request: Request, body: SearchRequest):
         # Executando a busca binária
         found_index = busca_binaria(orderedList, element)
         if(found_index == -1):
-            return{"result":found_index}
+            result = found_index
+        else:
+            ctx = baggage.set_baggage("binary", "teste")
+            headers = {}
+            W3CBaggagePropagator().inject(headers, ctx)
+            TraceContextTextMapPropagator().inject(headers, ctx)
+            # Retornando o resultado da busca
+            url = "http://register:8002/register"
+            response = requests.post(url, json={"data": found_index}, headers=headers)
+            result = response.json()
         
-        ctx = baggage.set_baggage("binary", "teste")
-        headers = {}
-        W3CBaggagePropagator().inject(headers, ctx)
-        TraceContextTextMapPropagator().inject(headers, ctx)
-        # Retornando o resultado da busca
-        url = "http://register:8002/register"
-        response = requests.post(url, json={"data": found_index}, headers=headers)
-        result = response.json()
-
+ 
     return {"result": result}

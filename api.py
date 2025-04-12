@@ -56,27 +56,27 @@ def merge_service(size: int = Query(10000, ge=1)):
     return {"message": "Merge sort completed"}
 
 #-----------------------------------------------Selection Sort------------------------------------------------
-@app.get("/selection")
-def selection_service(size: int= Query(10000, ge=1)):
-    p_metrics.total_requests_add(1, "/selection")
+# @app.get("/selection")
+# def selection_service(size: int= Query(10000, ge=1)):
+#     p_metrics.total_requests_add(1, "/selection")
 
-    with tracer.start_as_current_span("selectionsort", kind=trace.SpanKind.SERVER) as child:
-        random_list = [random.randint(1, size) for _ in range(size)]
-        selection_sort(random_list)
+#     with tracer.start_as_current_span("selectionsort", kind=trace.SpanKind.SERVER) as child:
+#         random_list = [random.randint(1, size) for _ in range(size)]
+#         selection_sort(random_list)
 
-    return {"message": "Selection sort completed"}
+#     return {"message": "Selection sort completed"}
 
-#---------------------------------------------------Iperf-----------------------------------------------------
-# @app.get("/iperftest")
-# def iperf_service(server: str = Query("0.0.0.0"), port: int = Query(5201, ge=1), duration: int = Query(10, ge=1)):
-#     p_metrics.total_requests_add(1, "/iperf")
+# #---------------------------------------------------Iperf-----------------------------------------------------
+# # @app.get("/iperftest")
+# # def iperf_service(server: str = Query("0.0.0.0"), port: int = Query(5201, ge=1), duration: int = Query(10, ge=1)):
+# #     p_metrics.total_requests_add(1, "/iperf")
     
-#     with tracer.start_as_current_span("iperf", kind=trace.SpanKind.SERVER) as child:
-#         run_iperf(server, port, duration)
+# #     with tracer.start_as_current_span("iperf", kind=trace.SpanKind.SERVER) as child:
+# #         run_iperf(server, port, duration)
     
-#     return {"message": "Iperf test completed"}
+# #     return {"message": "Iperf test completed"}
 
-#------------------------------------------------MiddleWare for active requests--------------------------------
+# #------------------------------------------------MiddleWare for active requests--------------------------------
 @app.middleware("http")
 async def count_active_requests(request:Request, call_next):
     p_metrics.active_requests_add(1)

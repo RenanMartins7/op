@@ -7,6 +7,20 @@ services:
   #   ports:
   #     - "5201:5201"
 
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.6.2
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - ELASTIC_PASSWORD=changeme
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data"
+
+
   jaeger:
     container_name: jaeger
     image: jaegertracing/all-in-one:latest
@@ -15,6 +29,10 @@ services:
       - "16686:16686"
     environment:
       COLLECTOR_OTLP_ENABLED: 1
+      SPAN_STORAGE_TYPE: elasticsearch
+      ES_SERVER_URLS: http://elasticsearch:9200
+    depends_on:
+      - elasticsearch
 
   collector:
     container_name: collector
@@ -84,3 +102,6 @@ services:
       - jaeger
       # - iperf
       - prometheus
+volumes:
+  elasticsearch-data:
+    driver: local
