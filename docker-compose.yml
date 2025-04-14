@@ -36,7 +36,7 @@ services:
 
   collector:
     container_name: collector
-    image: otel/opentelemetry-collector:latest
+    image: otel/opentelemetry-collector-contrib:latest
     ports:
       - "4320:4320" # OTLP gRPC
       - "4321:4321" # OTLP HTTP

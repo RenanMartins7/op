@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
       - name: collector-container
-        image: otel/opentelemetry-collector:latest
+        image: otel/opentelemetry-collector-contrib:latest
         # command: ["otelcol"] # Replace with the binary name, if required
         args: [ "--config=/etc/otel/config.yaml" ]
         ports:

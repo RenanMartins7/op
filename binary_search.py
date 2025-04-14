@@ -69,6 +69,7 @@ async def busca_binaria_endpoint(request: Request, body: SearchRequest):
 
         # Executando a busca binária
         found_index = busca_binaria(orderedList, element)
+        span.set_attribute("found_index", found_index)
         if(found_index == -1):
             result = found_index
         else:

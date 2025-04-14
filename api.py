@@ -41,8 +41,9 @@ def merge_service(size: int = Query(10000, ge=1)):
 
         random_list = [random.randint(1, size) for _ in range(size)]
         orderedList = merge_sort(random_list)
+        parent.set_attribute("List Size", size)
 
-        ctx = baggage.set_baggage("merge", "teste")
+        ctx = baggage.set_baggage("merge", "sucess")
         headers = {}
         W3CBaggagePropagator().inject(headers, ctx)
         TraceContextTextMapPropagator().inject(headers, ctx)
