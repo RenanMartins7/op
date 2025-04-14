@@ -32,3 +32,17 @@ spec:
           value: http://collector:4321/v1/traces
         ports:
         - containerPort: 8002
+
+---
+apiVersion: v1  
+kind: Service
+metadata:
+  name: register
+  #namespace: opentelemetry
+spec:
+  selector:
+    app: register
+  ports:
+    - protocol: TCP
+      port: 8002
+      targetPort: 8002
