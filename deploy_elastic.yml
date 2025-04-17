@@ -46,14 +46,4 @@ spec:
   ports:
     - port: 9200
       targetPort: 9200
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: elasticsearch-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
+
