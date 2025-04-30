@@ -1,4 +1,3 @@
-
 from opentelemetry import metrics, trace
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
@@ -10,17 +9,48 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from opentelemetry.sdk.trace.sampling import TraceIdRatioBased
 
 
-
-
-
 import os
+
+
+
+
+from opentelemetry.sdk.trace.sampling import Sampler, SamplingResult, Decision
+
+class ListSizeZeroSampler(Sampler):
+    def should_sample(
+        self,
+        parent_context,
+        trace_id,
+        name,
+        kind,
+        attributes,
+        links
+    ) -> SamplingResult:
+        list_size = attributes.get("List Size") if attributes else None
+
+        
+
+        # Só amostra se "List Size" existir e for igual a 1
+        if list_size == 1:
+            decision = Decision.RECORD_AND_SAMPLE
+            print(list_size)
+        else:
+            decision = Decision.DROP
+
+        return SamplingResult(
+            decision=decision,
+            attributes={}
+        )
+
+    def get_description(self) -> str:
+        return "Sampler that samples only if attribute 'List Size' == 0"
 
 
 def traces_provider(resource):
 
     traces_endpoint = os.getenv("TRACES_ENDPOINT", "http://collector:4321/v1/traces")
     
-    provider = TracerProvider(resource=resource, sampler=TraceIdRatioBased(1.0))
+    provider = TracerProvider(resource=resource, sampler=ListSizeZeroSampler())
     processor = BatchSpanProcessor(OTLPSpanExporter(endpoint = traces_endpoint))
     provider.add_span_processor(processor)
     trace.set_tracer_provider(provider)
