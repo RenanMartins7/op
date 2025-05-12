@@ -40,16 +40,24 @@ def merge_service(size: int = Query(10000, ge=1)):
     with tracer.start_as_current_span("mergesort", kind=trace.SpanKind.SERVER, attributes={"List Size":size}) as parent:
 
         random_list = [random.randint(1, size) for _ in range(size)]
-        orderedList = merge_sort(random_list)
+        userId = random.randint(1,size)
+        #Adicionado aqui o bug proposital para treinamento da ia
+        if(size % 501 == 0):
+            orderedList = random_list
+            parent.set_attribute("artificial_error", 1)
+        else:
+            orderedList = merge_sort(random_list)
 
         ctx = baggage.set_baggage("merge", "sucess")
         headers = {}
         W3CBaggagePropagator().inject(headers, ctx)
         TraceContextTextMapPropagator().inject(headers, ctx)
 
+        parent.set_attribute("List Size", size)
+
         url = "http://binary:8001/binary_search"
         
-        response = requests.post(url, json={"data": orderedList}, headers=headers)
+        response = requests.post(url, json={"data": orderedList, "userId": userId}, headers=headers)
 
 
 

@@ -8,8 +8,8 @@ receivers:
 processors:
   tail_sampling:
     decision_wait: 10s
-    num_traces: 100
-    expected_new_traces_per_sec: 10
+    num_traces: 2000
+    expected_new_traces_per_sec: 100
     policies:
       [
         {
@@ -20,12 +20,12 @@ processors:
         {
           name: latency-policy,
           type: latency,
-          latency: { threshold_ms: 10},
+          latency: { threshold_ms: 1},
         },
         {
           name: probability-policy,
           type: probabilistic,
-          probabilistic: { sampling_percentage: 1.0 },
+          probabilistic: { sampling_percentage: 100.0 },
         }
       ]
 

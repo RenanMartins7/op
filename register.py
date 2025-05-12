@@ -28,6 +28,7 @@ registerList = []
 
 class SearchRequest(BaseModel):
     data: int
+    userId: int
 
 
 @app.post("/register")
@@ -38,8 +39,20 @@ async def register_endpoint(request: Request, body: SearchRequest):
     baggage_ctx = W3CBaggagePropagator().extract(headers)
 
     element = body.data
+    userId = body.userId
 
     with tracer.start_as_current_span("register", context=ctx, kind=SpanKind.SERVER) as span:
-        registerList.append(element)
+        try:
+            # Colocado aqui o erro proposital para treinar a IA
+            if userId >= 2000 or userId <= 1000:
+                registerList.append(element)
+            # Colocando aqui código de erro forçado
+            elif element % 2345 == 0:
+                _ = element / 0  # força divisão por zero
 
-        return {"status": "ok"}
+            return {"status": "ok"}
+
+        except ZeroDivisionError as e:
+            span.record_exception(e)
+            span.set_status(trace.Status(trace.StatusCode.ERROR, str(e)))
+            return {"error": "Erro interno: divisão por zero"}, 500

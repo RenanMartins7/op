@@ -8,3 +8,5 @@ opentelemetry-exporter-otlp
 opentelemetry-instrumentation
 requests
 pydantic
+pandas
+scikit-learn

@@ -26,17 +26,20 @@ class ListSizeZeroSampler(Sampler):
         attributes,
         links
     ) -> SamplingResult:
+
+        decision = Decision.RECORD_AND_SAMPLE
         list_size = attributes.get("List Size") if attributes else None
 
         
 
         # Só amostra se "List Size" existir e for igual a 1
-        if list_size == 1:
-            decision = Decision.RECORD_AND_SAMPLE
-            print(list_size)
-        else:
-            decision = Decision.DROP
+        # if list_size == 1:
+        #     decision = Decision.RECORD_AND_SAMPLE
+        #     print(list_size)
+        # else:
+        #     decision = Decision.RECORD_AND_SAMPLE
 
+        #decision = Decision.RECORD_AND_SAMPLE
         return SamplingResult(
             decision=decision,
             attributes={}

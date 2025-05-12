@@ -26,6 +26,7 @@ app = FastAPI()
 
 class SearchRequest(BaseModel):
     data: List[int]
+    userId: int
 
 # Função de busca binária
 def busca_binaria(lista, elemento):
@@ -48,6 +49,7 @@ def busca_binaria(lista, elemento):
 async def busca_binaria_endpoint(request: Request, body: SearchRequest):
     # Extraindo os headers recebidos
     headers = dict(request.headers)
+    print("\nbinary")
 
     # Propagação do contexto de tracing e baggage
     ctx = TraceContextTextMapPropagator().extract(headers)
@@ -64,6 +66,9 @@ async def busca_binaria_endpoint(request: Request, body: SearchRequest):
         # Obtendo a lista ordenada do corpo da requisição
         orderedList = body.data
 
+        #Obtendo o userId
+        userId = body.userId
+
         # Selecionando um elemento aleatório para busca
         element = random.randint(1, len(orderedList))
 
@@ -79,7 +84,7 @@ async def busca_binaria_endpoint(request: Request, body: SearchRequest):
             TraceContextTextMapPropagator().inject(headers, ctx)
             # Retornando o resultado da busca
             url = "http://register:8002/register"
-            response = requests.post(url, json={"data": found_index}, headers=headers)
+            response = requests.post(url, json={"data": found_index, "userId": userId}, headers=headers)
             result = response.json()
         
  
