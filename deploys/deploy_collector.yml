@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: collector-config
-  #namespace: opentelemetry
+  namespace: rmalves
 data:
   config.yaml: |
     receivers:
@@ -13,8 +13,8 @@ data:
     processors:
       tail_sampling:
         decision_wait: 10s
-        num_traces: 100
-        expected_new_traces_per_sec: 10
+        num_traces: 2000
+        expected_new_traces_per_sec: 100
         policies:
           [
             {
@@ -23,14 +23,9 @@ data:
               status_code: { status_codes: [ERROR] },
             },
             {
-              name: latency-policy,
-              type: latency,
-              latency: { threshold_ms: 100},
-            },
-            {
               name: probability-policy,
               type: probabilistic,
-              probabilistic: { sampling_percentage: 1.0 },
+              probabilistic: { sampling_percentage: 100.0 },
             }
           ]
     exporters:
@@ -56,7 +51,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: collector
-  #namespace: opentelemetry
+  namespace: rmalves
   labels:
     app: collector
 spec:
@@ -89,7 +84,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: collector
-  #namespace: opentelemetry
+  namespace: rmalves
 spec:
   selector:
     app: collector

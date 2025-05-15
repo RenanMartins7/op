@@ -2,7 +2,7 @@ import requests
 import concurrent.futures
 import random
 
-URL = "http://localhost:8000/merge"
+URL = "http://api:8000/merge"
 NUM_REQUESTS = 3    # Número de requisições concorrentes
 NUM_SERIAL = 40000  # Número de requisições seriais
 

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: binary
-  #namespace: opentelemetry
+  namespace: rmalves
   labels:
     app: binary
 spec:
@@ -18,13 +18,13 @@ spec:
       containers:
       - name: api-container
         image: momosuke07/binary:latest
-        resources:
-          limits:
-            cpu: "1"
-            memory: "256Mi"
-          requests:
-            cpu: "200m"
-            memory: "128Mi"
+        # resources:
+        #   limits:
+        #     cpu: "1"
+        #     memory: "256Mi"
+        #   requests:
+        #     cpu: "200m"
+        #     memory: "128Mi"
         env:
         - name: METRICS_ENDPOINT
           value: http://collector:4321/v1/metrics
@@ -37,7 +37,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: binary
-  #namespace: opentelemetry
+  namespace: rmalves
 spec:
   selector:
     app: binary

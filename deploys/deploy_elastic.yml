@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: elasticsearch
+  namespace: rmalves
   labels:
     app: elasticsearch
 spec:
@@ -28,18 +29,13 @@ spec:
               value: changeme
             - name: xpack.security.enabled
               value: "false"
-          volumeMounts:
-            - name: elasticsearch-data
-              mountPath: /usr/share/elasticsearch/data
-      volumes:
-        - name: elasticsearch-data
-          persistentVolumeClaim:
-            claimName: elasticsearch-pvc
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: elasticsearch
+  namespace: rmalves
 spec:
   selector:
     app: elasticsearch

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-config
-  #namespace: opentelemetry
+  namespace: rmalves
 data:
   prometheus.yml: |
     scrape_configs:
@@ -15,7 +15,7 @@ apiVersion: apps/v1
 kind: Deployment 
 metadata:
   name: prometheus
-  #namespace: opentelemetry
+  namespace: rmalves
   labels:
     app: prometheus
 spec:
@@ -46,7 +46,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus
-  #namespace: opentelemetry
+  namespace: rmalves
 spec:
   selector:
     app: prometheus
