@@ -49,7 +49,6 @@ def busca_binaria(lista, elemento):
 async def busca_binaria_endpoint(request: Request, body: SearchRequest):
     # Extraindo os headers recebidos
     headers = dict(request.headers)
-    print("\nbinary")
 
     # Propagação do contexto de tracing e baggage
     ctx = TraceContextTextMapPropagator().extract(headers)
@@ -57,11 +56,6 @@ async def busca_binaria_endpoint(request: Request, body: SearchRequest):
 
     # Criando um span filho do trace recebido
     with tracer.start_as_current_span("binary_search", context=ctx, kind=SpanKind.SERVER) as span:
-
-        # Recuperando possíveis valores da baggage
-        merge_info = baggage.get_baggage("merge", context=baggage_ctx)
-        if merge_info:
-            span.set_attribute("baggage.merge", merge_info)
 
         # Obtendo a lista ordenada do corpo da requisição
         orderedList = body.data

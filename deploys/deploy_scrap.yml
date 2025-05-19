@@ -15,6 +15,6 @@ spec:
       containers:
         - name: terminal-container
           image: momosuke07/scrap:latest # Substitua pelo nome da imagem (ex: meu-repo/terminal:latest)
-          imagePullPolicy: IfNotPresent
+          imagePullPolicy: Always
           tty: true
           stdin: true
