@@ -3,8 +3,8 @@ import concurrent.futures
 import random
 
 URL = "http://api:8000/merge"
-NUM_REQUESTS = 3    # Número de requisições concorrentes
-NUM_SERIAL = 40000  # Número de requisições seriais
+NUM_REQUESTS = 10    # Número de requisições concorrentes
+NUM_SERIAL = 200  # Número de requisições seriais
 
 def make_request():
     try:
