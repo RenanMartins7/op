@@ -25,7 +25,8 @@ p_metrics = prometheus_metrics(meter)
 app = FastAPI()
 
 class SearchRequest(BaseModel):
-    data: List[int]
+    array: List[int]
+    index: int
     userId: int
 
 # Função de busca binária
@@ -58,13 +59,13 @@ async def busca_binaria_endpoint(request: Request, body: SearchRequest):
     with tracer.start_as_current_span("binary_search", context=ctx, kind=SpanKind.SERVER) as span:
 
         # Obtendo a lista ordenada do corpo da requisição
-        orderedList = body.data
+        orderedList = body.array
 
         #Obtendo o userId
         userId = body.userId
 
         # Selecionando um elemento aleatório para busca
-        element = random.randint(1, len(orderedList))
+        element = body.index
 
         # Executando a busca binária
         found_index = busca_binaria(orderedList, element)

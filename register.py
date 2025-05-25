@@ -48,7 +48,11 @@ async def register_endpoint(request: Request, body: SearchRequest):
                 registerList.append(element)
             # Colocando aqui código de erro forçado
             elif element % 2345 == 0:
+                span.set_attribute("index_2345_error", 1)
                 _ = element / 0  # força divisão por zero
+                # registerList.append(element)
+            else:
+                span.set_attribute("userId_error", 1)
 
             return {"status": "ok"}
 

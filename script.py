@@ -1,24 +1,21 @@
 import requests
 import concurrent.futures
-import random
+import json
 
-URL = "http://api:8000/merge"
-NUM_REQUESTS = 10    # Número de requisições concorrentes
-NUM_SERIAL = 20000  # Número de requisições seriais
+URL = "http://localhost:8000/merge"
+MAX_WORKERS = 1  # Número de requisições concorrentes
 
-def make_request():
+# Carrega os dados do arquivo
+with open("dados.json", "r") as f:
+    entradas = json.load(f)
+
+# Função que envia uma única requisição com uma entrada
+def make_request(payload):
     try:
-        if random.randint(1,200) == 50:
-            size = 0
-        else:
-            size = random.randint(1, 10000)
-        params = {"size": size}
-        response = requests.get(URL, params=params)
-        #print(f"Requisição com size={size} => Status: {response.status_code}")
+        response = requests.post(URL, json=payload)
     except Exception as e:
-        print(f"Erro: {e}")
+        print(f"Erro ao enviar userId={payload['userId']}: {e}")
 
-with concurrent.futures.ThreadPoolExecutor(max_workers=NUM_REQUESTS) as executor:
-    for _ in range(NUM_SERIAL):
-        executor.map(lambda _: make_request(), range(NUM_REQUESTS))
-
+# Executa as requisições com paralelismo, mas sem repetir entrada
+with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    executor.map(make_request, entradas)

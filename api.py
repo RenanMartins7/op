@@ -1,4 +1,6 @@
-from fastapi import FastAPI, Query, Request
+from fastapi import FastAPI, Request
+from fastapi import Query
+from fastapi import Body
 import requests
 from merge import *
 from selection import *
@@ -7,68 +9,61 @@ from otlp_provider import *
 from metrics import *
 import json
 
-from opentelemetry import metrics
-
-from opentelemetry import baggage
+from opentelemetry import metrics, trace, baggage
 from opentelemetry.trace.propagation.tracecontext import TraceContextTextMapPropagator
 from opentelemetry.baggage.propagation import W3CBaggagePropagator
 
-
-import random
-
-from typing import Iterable
-
+import os
+from typing import List
 from opentelemetry.sdk.resources import SERVICE_NAME, Resource
+from pydantic import BaseModel
 
 resource = Resource(attributes={SERVICE_NAME: "api"})
 os.environ["OTEL_SERVICE_NAME"] = "api"
 
-#-----------------------------------------Traces, metrics and app service creation-------------------------
+# Traces, metrics, and app
 tracer = traces_provider(resource)
 meter = metrics_provider(resource)
 p_metrics = prometheus_metrics(meter)
 app = FastAPI()
 
+# Request model
+class SearchRequest(BaseModel):
+    array: List[int]
+    index: int
+    userId: int
 
-
-#-----------------------------------------Services Implementation------------------------------------------
-#-----------------------------------------------Merge Sort-------------------------------------------------
-@app.get("/merge")
-def merge_service(size: int = Query(10000, ge=1)):
+# POST /merge: recebe dados e repassa ao serviço /binary_search
+@app.post("/merge")
+def merge_service(payload: SearchRequest):
     p_metrics.total_requests_add(1, "/merge")
 
-    with tracer.start_as_current_span("mergesort", kind=trace.SpanKind.SERVER, attributes={"List Size":size}) as parent:
+    size = len(payload.array)
+    with tracer.start_as_current_span(
+        "mergesort", 
+        kind=trace.SpanKind.SERVER, 
+        attributes={"List Size": size, "userId": payload.userId, "index": payload.index}
+    ) as parent:
 
-        random_list = [random.randint(1, size) for _ in range(size)]
-        userId = random.randint(1,size)
-        #Adicionado aqui o bug proposital para treinamento da ia
-        if(size % 501 == 0):
-            orderedList = random_list
+        # Adiciona erro artificial se múltiplo de 501
+        if size % 501 == 0:
+            orderedList = payload.array
             parent.set_attribute("artificial_error", 1)
         else:
-            orderedList = merge_sort(random_list)
+            orderedList = merge_sort(payload.array)
 
-        ctx = baggage.set_baggage("merge", "sucess")
+        # Propagação de contexto
+        ctx = baggage.set_baggage("merge", "success")
         headers = {}
         W3CBaggagePropagator().inject(headers, ctx)
         TraceContextTextMapPropagator().inject(headers, ctx)
 
-        parent.set_attribute("List Size", size)
-
+        # Envia para serviço /binary_search
         url = "http://binary:8001/binary_search"
-        
-        response = requests.post(url, json={"data": orderedList, "userId": userId}, headers=headers)
-
-
+        response = requests.post(url, json={
+            "array": orderedList,
+            "index": payload.index,
+            "userId": payload.userId
+        }, headers=headers)
 
     return {"message": "Merge sort completed"}
-
-# #------------------------------------------------MiddleWare for active requests--------------------------------
-@app.middleware("http")
-async def count_active_requests(request:Request, call_next):
-    p_metrics.active_requests_add(1)
-    response = await call_next(request)
-    p_metrics.active_requests_add(-1)
-
-    return response
-    

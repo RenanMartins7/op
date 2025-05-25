@@ -2,8 +2,8 @@ import requests
 import json
 
 # Configurações
-ES_URL = "http://elasticsearch:9200/jaeger-span-*/_search?scroll=2m"
-SCROLL_URL = "http://elasticsearch:9200/_search/scroll"
+ES_URL = "http://localhost:9200/jaeger-span-*/_search?scroll=2m"
+SCROLL_URL = "http://localhost:9200/_search/scroll"
 HEADERS = {"Content-Type": "application/json"}
 BATCH_SIZE = 1000  # número de documentos por lote
 operations = ["mergesort", "binary_search", "register"]
