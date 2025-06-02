@@ -1,8 +1,7 @@
 FROM python:3.10-slim
 
 WORKDIR /app
-COPY ia.py .
-COPY scrap.py .
+COPY . .
 
 
 RUN pip install requests \

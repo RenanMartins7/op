@@ -10,24 +10,24 @@ data:
         protocols:
           http:
             endpoint: 0.0.0.0:4321
-    processors:
-      tail_sampling:
-        decision_wait: 10s
-        num_traces: 2000
-        expected_new_traces_per_sec: 100
-        policies:
-          [
-            {
-              name: errors-policy,
-              type: status_code,
-              status_code: { status_codes: [ERROR] },
-            },
-            {
-              name: probability-policy,
-              type: probabilistic,
-              probabilistic: { sampling_percentage: 100.0 },
-            }
-          ]
+    # processors:
+    #   tail_sampling:
+    #     decision_wait: 10s
+    #     num_traces: 2000
+    #     expected_new_traces_per_sec: 100
+    #     policies:
+    #       [
+    #         {
+    #           name: errors-policy,
+    #           type: status_code,
+    #           status_code: { status_codes: [ERROR] },
+    #         },
+    #         {
+    #           name: probability-policy,
+    #           type: probabilistic,
+    #           probabilistic: { sampling_percentage: 100.0 },
+    #         }
+    #       ]
     exporters:
       debug:
         verbosity: detailed
@@ -39,7 +39,7 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          processors: [tail_sampling]
+          # processors: [tail_sampling]
           exporters: [otlphttp]
         metrics:
           receivers: [otlp]

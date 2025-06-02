@@ -21,7 +21,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 9200
-          command: [ "bin/elasticsearch", "-Eingest.geoip.downloader.enabled=false" ]
           env:
             - name: discovery.type
               value: single-node

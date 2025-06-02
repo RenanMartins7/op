@@ -4,6 +4,7 @@ from metrics import *
 from pydantic import BaseModel
 from typing import List
 import random
+import time
 
 from opentelemetry import baggage
 from opentelemetry.trace import SpanKind
@@ -44,13 +45,15 @@ async def register_endpoint(request: Request, body: SearchRequest):
     with tracer.start_as_current_span("register", context=ctx, kind=SpanKind.SERVER) as span:
         try:
             # Colocado aqui o erro proposital para treinar a IA
-            if userId >= 2000 or userId <= 1000:
-                registerList.append(element)
-            # Colocando aqui código de erro forçado
-            elif element % 2345 == 0:
-                span.set_attribute("index_2345_error", 1)
-                _ = element / 0  # força divisão por zero
+            if element % 1000 == 0:
+                span.set_attribute("index_1000_error", 1)
+                time.sleep(0.07)
                 # registerList.append(element)
+
+            elif userId > 1000 or userId < 950:
+                registerList.append(element)
+                span.set_attribute("element", element)
+            # Colocando aqui código de erro forçado
             else:
                 span.set_attribute("userId_error", 1)
 
